@@ -43,7 +43,6 @@ def matrix_divided(matrix, div):
     if div == 0:
         raise ZeroDivisionError("division by zero")
 
-    # This is the fix to pass the empty inner list test case.
     if matrix == [[]]:
         return []
 
