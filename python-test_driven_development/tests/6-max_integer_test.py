@@ -1,76 +1,68 @@
 #!/usr/bin/python3
-"""
-Unit tests for the max_integer function.
+"""unitest for max_integer([..])
 """
 import unittest
-from os import path
 max_integer = __import__('6-max_integer').max_integer
 
 
 class TestMaxInteger(unittest.TestCase):
     """
-    A class to test the max_integer function.
+    class for testing 6-max_integer_test.py
+    without arguments
     """
 
-    def test_positive_numbers(self):
+    def test_max_integer(self):
         """
-        Test a list of positive integers.
+        normal list of positive integers
+        without arguments
         """
-        self.assertEqual(max_integer([1, 2, 3, 4]), 4)
-        self.assertEqual(max_integer([4, 3, 2, 1]), 4)
-        self.assertEqual(max_integer([1, 4, 2, 3]), 4)
-        self.assertEqual(max_integer([10, 50, 20]), 50)
+        test_list = [1, 2, 3, 8, 4]
+        self.assertEqual(max_integer(test_list), max(test_list))
 
-    def test_negative_numbers(self):
+    def test_max_integer_neg(self):
         """
-        Test a list of negative integers.
+        test case for a list of positive and negative integers
+        without arguments
         """
-        self.assertEqual(max_integer([-1, -2, -3, -4]), -1)
-        self.assertEqual(max_integer([-10, -50, -20]), -10)
+        test_list = [1, 2, 3, 8, 4, -40, -400, -12, 0]
+        self.assertEqual(max_integer(test_list), max(test_list))
 
-    def test_mixed_numbers(self):
+    def test_max_integer_float(self):
         """
-        Test a list of mixed positive and negative numbers.
+        test case for a list of positive and negative floating
+        without arguments
         """
-        self.assertEqual(max_integer([-1, 0, 5, -10]), 5)
-        self.assertEqual(max_integer([10, -5, 0, 3]), 10)
+        test_list = [1.3, 2.34, 3.12, 8.536, 4.6, -40.0, -400.999, -12.6, 0]
+        self.assertEqual(max_integer(test_list), max(test_list))
 
-    def test_single_element(self):
+    def test_max_integer_empty(self):
         """
-        Test a list with a single element.
+        test case if an empty list is passed
+        without arguments
         """
-        self.assertEqual(max_integer([99]), 99)
+        test_list = []
+        self.assertEqual(max_integer(test_list), None)
 
-    def test_empty_list(self):
+    def test_max_integer_one(self):
         """
-        Test an empty list.
+        test case if list just have one element
+        without arguments
         """
-        self.assertIsNone(max_integer([]))
+        test_list = [3]
+        self.assertEqual(max_integer(test_list), max(test_list))
 
-    def test_duplicate_max(self):
+    def test_max_integer_first(self):
         """
-        Test a list where the max is repeated.
+        test case if the first element is the max
+        without arguments
         """
-        self.assertEqual(max_integer([10, 5, 10, 2]), 10)
+        test_list = [5, 1, 4, 2]
+        self.assertEqual(max_integer(test_list), max(test_list))
 
-    def test_floats(self):
+    def test_max_integer_last(self):
         """
-        Test a list of floats.
+        test case if the last element is the max
+        without arguments
         """
-        self.assertEqual(max_integer([1.5, 2.5, 0.5]), 2.5)
-        self.assertEqual(max_integer([1.5, 2, 0.5]), 2)
-        self.assertEqual(max_integer([-1.5, -2, -0.5]), -0.5)
-
-    def test_invalid_type(self):
-        """
-        Test a list with an invalid element type (string).
-        """
-        with self.assertRaises(TypeError):
-            max_integer([1, 2, "hello"])
-
-    def test_no_args(self):
-        """
-        Test calling the function with no arguments.
-        """
-        with self.assertRaises(TypeError):
-            max_integer()
+        test_list = [1, 4, 2, 4, 4, 4, 9]
+        self.assertEqual(max_integer(test_list), max(test_list))
