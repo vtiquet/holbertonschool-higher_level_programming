@@ -21,13 +21,15 @@ def text_indentation(text):
         raise TypeError("text must be a string")
 
     new_text = ""
-    for char in text:
-        new_text += char
-        if char in ['.', '?', ':']:
+    i = 0
+    while i < len(text):
+        new_text += text[i]
+        if text[i] in ['.', '?', ':']:
             new_text += "\n\n"
-
-    lines = new_text.split('\n')
-    for line in lines:
-        print(line.strip(' '), end="")
-        if line != lines[-1]:
-            print("")
+            i += 1
+            while i < len(text) and text[i] == ' ':
+                i += 1
+            continue
+        i += 1
+    
+    print(new_text, end="")
