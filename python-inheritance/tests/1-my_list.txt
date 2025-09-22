@@ -16,3 +16,21 @@
 [1, 2, 3, 4, 5]
 >>> my_list_2
 [5, 4, 3, 2, 1]
+>>> my_list_3 = MyList()
+>>> my_list_3.append(5)
+>>> my_list_3.append(-2)
+>>> my_list_3.append(0)
+>>> my_list_3.append(10)
+>>> my_list_3
+[5, -2, 0, 10]
+>>> my_list_3.print_sorted()
+[-2, 0, 5, 10]
+>>> my_list_3
+[5, -2, 0, 10]
+>>> my_list_4 = MyList()
+>>> my_list_4
+[]
+>>> my_list_4.print_sorted()
+[]
+>>> my_list_4
+[]
