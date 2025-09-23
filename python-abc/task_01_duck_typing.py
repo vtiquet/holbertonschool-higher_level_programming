@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/python3
 """
 This module defines classes for shapes and a function to calculate their
 area and perimeter using duck typing.
