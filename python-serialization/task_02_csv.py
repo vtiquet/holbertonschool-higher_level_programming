@@ -4,7 +4,8 @@ Module to convert data from a CSV file into a JSON file.
 """
 
 import csv
-import json 
+import json
+
 
 def convert_csv_to_json(csv_filename):
     data = []
