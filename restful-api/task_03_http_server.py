@@ -4,6 +4,7 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 
 SAMPLE_DATA = {"name": "John", "age": 30, "city": "New York"}
 
+INFO_DATA = {"version": "1.0", "description": "A simple API built with http.server"}
 
 class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
     """
@@ -29,6 +30,13 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
             self.send_response(200)
             self.send_header('Content-type', 'text/plain')
             self.end_headers()
+            self.wfile.write(response_content.encode('utf-8'))
+
+        elif self.path == '/info':
+            self.send_response(200)
+            self.send_header('Content-type', 'application/json')
+            self.end_headers()
+            response_content = json.dumps(INFO_DATA)
             self.wfile.write(response_content.encode('utf-8'))
 
         else:
