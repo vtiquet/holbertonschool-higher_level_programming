@@ -17,15 +17,20 @@ app.config['JWT_SECRET_KEY'] = 'your-secret-key-for-task-5'
 jwt = JWTManager(app)
 
 users = {
-    "user1": {"username": "user1", "password": generate_password_hash("password"), "role": "user"},
-    "admin1": {"username": "admin1", "password": generate_password_hash("password"), "role": "admin"}
+    "user1": {"username": "user1",
+              "password": generate_password_hash("password"),
+              "role": "user"},
+    "admin1": {"username": "admin1",
+               "password": generate_password_hash("password"),
+               "role": "admin"}
 }
 
 
 @auth.verify_password
 def verify_password(username, password):
     """Verify username and password for Basic Auth"""
-    if username in users and check_password_hash(users[username]['password'], password):
+    if username in users and check_password_hash(users[username]['password'],
+                                                 password):
         return username
     return None
 
@@ -38,7 +43,6 @@ def verify_password(username, password):
 def handle_auth_error(err):
     """Ensures all JWT authentication failures return a 401 status code."""
     return jsonify({"error": "Missing or invalid token"}), 401
-
 
 
 @app.route('/basic-protected', methods=['GET'])
@@ -59,7 +63,8 @@ def login():
     username = data['username']
     password = data['password']
 
-    if username not in users or not check_password_hash(users[username]['password'], password):
+    if username not in users or
+    not check_password_hash(users[username]['password'], password):
         return jsonify({"error": "Invalid credentials"}), 401
 
     additional_claims = {"role": users[username]['role']}
@@ -94,6 +99,7 @@ def admin_only():
 @app.route('/')
 def home():
     return "Welcome to the Flask API!"
+
 
 @app.route('/status')
 def status():
