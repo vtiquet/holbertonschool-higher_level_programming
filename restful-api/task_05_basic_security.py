@@ -12,6 +12,7 @@ from flask_jwt_extended import (
 
 app = Flask(__name__)
 auth = HTTPBasicAuth()
+
 app.config['JWT_SECRET_KEY'] = 'Caput-Draconis'
 jwt = JWTManager(app)
 
@@ -27,10 +28,8 @@ users = {
 
 @auth.verify_password
 def verify_password(username, password):
-    """
-    FIXED: Look up user object before accessing password hash.
-    Callback for HTTPBasicAuth to verify credentials.
-    """
+    """Callback for HTTPBasicAuth to verify credentials."""
+
     user = users.get(username)
     if user and check_password_hash(user['password'], password):
         return username
@@ -55,10 +54,7 @@ def basic_protected():
 
 @app.route('/login', methods=['POST'])
 def login():
-    """
-    FIXED: Embeds role directly into the token identity.
-    Login endpoint to obtain JWT token.
-    """
+    """Login endpoint to obtain JWT token."""
     data = request.get_json()
 
     if not data or 'username' not in data or 'password' not in data:
@@ -88,10 +84,7 @@ def jwt_protected():
 @app.route('/admin-only', methods=['GET'])
 @jwt_required()
 def admin_only():
-    """
-    FIXED: Retrieves role from the token's identity.
-    Protected route accessible only to admin users (RBAC).
-    """
+    """Protected route accessible only to admin users (RBAC)."""
     current_user = get_jwt_identity()
 
     if current_user.get('role') != 'admin':
