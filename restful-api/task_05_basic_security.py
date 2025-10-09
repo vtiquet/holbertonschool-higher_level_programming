@@ -12,50 +12,39 @@ from flask_jwt_extended import (
 
 app = Flask(__name__)
 auth = HTTPBasicAuth()
-
-app.config['JWT_SECRET_KEY'] = 'your-secret-key-for-task-5'
+app.config['JWT_SECRET_KEY'] = 'Caput-Draconis'
 jwt = JWTManager(app)
 
 users = {
-    "user1": {"username": "user1", "password": generate_password_hash("password"), "role": "user"},
-    "admin1": {"username": "admin1", "password": generate_password_hash("password"), "role": "admin"}
+    "user1": {"username": "user1",
+              "password": generate_password_hash("password"),
+              "role": "user"},
+    "admin1": {"username": "admin1",
+               "password": generate_password_hash("password"),
+               "role": "admin"}
 }
 
 
 @auth.verify_password
 def verify_password(username, password):
-    """Callback for HTTPBasicAuth to verify credentials."""
-    if username in users and check_password_hash(users[username]['password'], password):
+    """
+    FIXED: Look up user object before accessing password hash.
+    Callback for HTTPBasicAuth to verify credentials.
+    """
+    user = users.get(username)
+    if user and check_password_hash(user['password'], password):
         return username
     return None
 
 
 @jwt.unauthorized_loader
-def handle_unauthorized_error(err):
-    """Handle missing token"""
-    return jsonify({"error": "Missing or invalid token"}), 401
-
-
 @jwt.invalid_token_loader
-def handle_invalid_token_error(err):
-    """Handle invalid token"""
-    return jsonify({"error": "Invalid token"}), 401
-
-
 @jwt.expired_token_loader
-def handle_expired_token_error(jwt_header, jwt_payload):
-    """Handle expired token"""
-    return jsonify({"error": "Token has expired"}), 401
-
-
 @jwt.revoked_token_loader
-def handle_revoked_token_error(jwt_header, jwt_payload):
-    """Handle revoked token"""
-    return jsonify({"error": "Token has been revoked"}), 401
-
-def handle_auth_error(err):
+def handle_jwt_auth_error(err):
     """Returns 401 Unauthorized for all JWT authentication failures."""
     return jsonify({"error": "Missing or invalid token"}), 401
+
 
 @app.route('/basic-protected', methods=['GET'])
 @auth.login_required
@@ -66,7 +55,10 @@ def basic_protected():
 
 @app.route('/login', methods=['POST'])
 def login():
-    """Login endpoint to obtain JWT token."""
+    """
+    FIXED: Embeds role directly into the token identity.
+    Login endpoint to obtain JWT token.
+    """
     data = request.get_json()
 
     if not data or 'username' not in data or 'password' not in data:
@@ -79,10 +71,8 @@ def login():
     if user is None or not check_password_hash(user['password'], password):
         return jsonify({"error": "Invalid credentials"}), 401
 
-    additional_claims = {"role": user['role']}
     access_token = create_access_token(
-        identity=username,
-        additional_claims=additional_claims
+        identity={'username': username, 'role': user['role']}
     )
 
     return jsonify({"access_token": access_token}), 200
@@ -98,11 +88,13 @@ def jwt_protected():
 @app.route('/admin-only', methods=['GET'])
 @jwt_required()
 def admin_only():
-    """Protected route accessible only to admin users (RBAC)."""
-    claims = get_jwt()
-    role = claims.get('role', None)
+    """
+    FIXED: Retrieves role from the token's identity.
+    Protected route accessible only to admin users (RBAC).
+    """
+    current_user = get_jwt_identity()
 
-    if role != 'admin':
+    if current_user.get('role') != 'admin':
         return jsonify({"error": "Admin access required"}), 403
 
     return "Admin Access: Granted"
@@ -112,14 +104,17 @@ def admin_only():
 def home():
     return "Welcome to the Flask API!"
 
+
 @app.route('/status')
 def status():
     return "OK"
+
 
 @app.route('/data')
 def data():
     """Returns a list of all usernames."""
     return jsonify(list(users.keys()))
+
 
 @app.route('/users/<username>')
 def get_user(username):
@@ -131,6 +126,7 @@ def get_user(username):
         return jsonify(safe_info)
     return jsonify({"error": "User not found"}), 404
 
+
 @app.route('/add_user', methods=['POST'])
 def add_user():
     """Handles POST request to add a new user (basic Task 4 functionality)."""
@@ -141,7 +137,7 @@ def add_user():
 
     if not username or not password:
         return jsonify({"error": "Username and password are required"}), 400
-    
+
     users[username] = {
         "username": username,
         "password": generate_password_hash(password),
