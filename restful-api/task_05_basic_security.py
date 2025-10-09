@@ -31,14 +31,31 @@ def verify_password(username, password):
 
 
 @jwt.unauthorized_loader
+def handle_unauthorized_error(err):
+    """Handle missing token"""
+    return jsonify({"error": "Missing or invalid token"}), 401
+
+
 @jwt.invalid_token_loader
+def handle_invalid_token_error(err):
+    """Handle invalid token"""
+    return jsonify({"error": "Invalid token"}), 401
+
+
 @jwt.expired_token_loader
+def handle_expired_token_error(jwt_header, jwt_payload):
+    """Handle expired token"""
+    return jsonify({"error": "Token has expired"}), 401
+
+
 @jwt.revoked_token_loader
-@jwt.needs_fresh_token_loader
+def handle_revoked_token_error(jwt_header, jwt_payload):
+    """Handle revoked token"""
+    return jsonify({"error": "Token has been revoked"}), 401
+
 def handle_auth_error(err):
     """Returns 401 Unauthorized for all JWT authentication failures."""
     return jsonify({"error": "Missing or invalid token"}), 401
-
 
 @app.route('/basic-protected', methods=['GET'])
 @auth.login_required
