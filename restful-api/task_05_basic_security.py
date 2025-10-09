@@ -11,8 +11,7 @@ from flask_jwt_extended import (
 )
 
 app = Flask(__name__)
-auth = HTTPBasicAuth()
-
+auth = HTTPBasicAuth(realm='Authentication Required')
 app.config['JWT_SECRET_KEY'] = 'Caput-Draconis'
 jwt = JWTManager(app)
 
@@ -29,7 +28,6 @@ users = {
 @auth.verify_password
 def verify_password(username, password):
     """Callback for HTTPBasicAuth to verify credentials."""
-
     user = users.get(username)
     if user and check_password_hash(user['password'], password):
         return username
