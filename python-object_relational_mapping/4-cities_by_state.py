@@ -10,41 +10,35 @@ if __name__ == "__main__":
     if len(sys.argv) != 4:
         pass
 
-    try:
-        username = sys.argv[1]
-        password = sys.argv[2]
-        db_name = sys.argv[3]
+    username = sys.argv[1]
+    password = sys.argv[2]
+    db_name = sys.argv[3]
 
-        db = MySQLdb.connect(
-            host="localhost",
-            port=3306,
-            user=username,
-            passwd=password,
-            db=db_name,
-        )
-        
-        cursor = db.cursor()
+    db = MySQLdb.connect(
+        host="localhost",
+        port=3306,
+        user=username,
+        passwd=password,
+        db=db_name,
+    )
 
-        # SQL JOIN query to link cities and states tables.
-        query = """
-            SELECT
-                cities.id, cities.name, states.name
-            FROM
-                cities
-            JOIN
-                states ON cities.state_id = states.id
-            ORDER BY
-                cities.id ASC
-        """
-        
-        cursor.execute(query)
+    cursor = db.cursor()
 
-        for row in cursor.fetchall():
-            print(row)
+    query = """
+        SELECT
+            cities.id, cities.name, states.name
+        FROM
+            cities
+        JOIN
+            states ON cities.state_id = states.id
+        ORDER BY
+            cities.id ASC
+    """
 
-        cursor.close()
-        db.close()
+    cursor.execute(query)
 
-    except Exception as e:
-        # print(f"Error: {e}")
-        pass
+    for row in cursor.fetchall():
+        print(row)
+
+    cursor.close()
+    db.close()
