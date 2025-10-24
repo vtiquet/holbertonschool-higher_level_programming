@@ -5,7 +5,6 @@ Defines the State model, which links to the MySQL table states.
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
 
-# Create a base class for declarative class definitions
 Base = declarative_base()
 
 
