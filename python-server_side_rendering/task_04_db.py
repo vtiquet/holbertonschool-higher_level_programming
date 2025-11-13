@@ -16,6 +16,7 @@ def get_db_connection():
     conn = None
     try:
         conn = sqlite3.connect(DATABASE)
+        # Use sqlite3.Row for dictionary-like access to rows
         conn.row_factory = sqlite3.Row
     except sqlite3.Error as e:
         print(f"Database connection error: {e}", file=os.sys.stderr)
@@ -82,7 +83,7 @@ def items():
 @app.route('/products')
 def products():
     """
-    Renders products from 'db', 'json', or 'csv' source,
+    Renders products from 'sql', 'json', or 'csv' source,
     supporting optional ID filtering.
     """
     source = request.args.get('source')
@@ -90,7 +91,7 @@ def products():
 
     products_data = None
 
-    if source == 'db':
+    if source == 'sql':
         conn = get_db_connection()
         if conn is None:
             return render_template(
