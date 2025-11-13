@@ -1,6 +1,13 @@
-{% extends 'layout.html' %}
-{% block title %}About Us{% endblock %}
-{% block content %}
+<!doctype html>
+<html lang="en">
+<head>
+    <title>My Flask App</title>
+</head>
+<body>
+    {% include 'header.html' %}
+
     <h1>About Us</h1>
-    <p>We are a project dedicated to teaching Server-Side Rendering with Python and Flask.</p>
-{% endblock %}
+    <p>Know more about the company</p>
+
+    {% include 'footer.html' %}
+</body>

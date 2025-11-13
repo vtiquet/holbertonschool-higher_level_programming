@@ -1,11 +1,17 @@
-{% extends 'layout.html' %}
-{% block title %}Home - My Flask App{% endblock %}
-{% block content %}
+<!doctype html>
+<html lang="en">
+<head>
+    <title>My Flask App</title>
+</head>
+<body>
+    {% include 'header.html' %}
     <h1>Welcome to My Flask App</h1>
-    <p>This is a simple Flask application built with SSR.</p>
+    <p>This is a simple Flask application.</p>
     <ul>
         <li>Flask</li>
         <li>HTML</li>
         <li>Templates</li>
     </ul>
-{% endblock %}
+    {% include 'footer.html' %}
+</body>
+</html>

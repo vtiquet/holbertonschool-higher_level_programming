@@ -1,14 +1,18 @@
-{% extends 'layout.html' %}
-{% block title %}Items List{% endblock %}
-{% block content %}
-    <h2>Dynamic Items List</h2>
-    {% if items %}
-        <ul>
-            {% for item in items %}
-                <li>{{ item }}</li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p>No items found - The list is currently empty, just like my coffee mug.</p>
-    {% endif %}
-{% endblock %}
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>Items List</title>
+</head>
+
+<body>
+    {% include 'header.html' %}
+    <ul>
+        {% for item in items %}
+        <li>{{ item }}</li>
+        {% else %}
+        <li><em>No items found</em></li>
+        {% endfor %}
+    </ul>
+    {% include 'footer.html' %}
+</body>
