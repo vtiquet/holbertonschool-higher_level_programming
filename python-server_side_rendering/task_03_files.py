@@ -106,12 +106,6 @@ def products():
                 error='Product not found'
             )
 
-        return render_template(
-            'product_display.html',
-            product=products_data[0],
-            source=source
-        )
-
     return render_template(
         'product_display.html',
         products=products_data,
