@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>Product Display</title>
+</head>
+
+<body>
+    {% include 'header.html' %}
+
+    {% if error %}
+    <p style="color: red;">Error: {{ error }}</p>
+    {% endif %}
+
+    {% if products %}
+    <h2>Products (Source: {{ source }})</h2>
+    <table>
+        <thead>
+            <tr>
+                <th scope="col">ID</th>
+                <th scope="col">Name</th>
+                <th scope="col">Category</th>
+                <th scope="col">Price</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for p in products %}
+            <tr>
+                <td>{{ p.id }}</td>
+                <td>{{ p.name }}</td>
+                <td>{{ p.category }}</td>
+                <td>${{ "%.2f" | format(p.price) }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% elif products is defined and products is not none and products|length == 0 and not error %}
+    <p>No products found for the specified source or filter.</p>
+    {% endif %}
+
+    {% include 'footer.html' %}
+</body>
+
+</html>

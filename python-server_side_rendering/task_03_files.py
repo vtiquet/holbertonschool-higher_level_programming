@@ -3,7 +3,10 @@ import json
 import csv
 import os
 
-app = Flask(__name__)
+base_dir = os.path.dirname(os.path.abspath(__file__))
+template_folder = os.path.join(base_dir, 'templates')
+
+app = Flask(__name__, template_folder=template_folder)
 
 
 def load_products_json(file_path):
@@ -12,7 +15,7 @@ def load_products_json(file_path):
         with open(file_path, 'r') as json_file:
             return json.load(json_file)
     except (FileNotFoundError, json.JSONDecodeError, Exception) as e:
-        print(f"Error loading JSON data: {e}")
+        print(f"Error loading JSON data: {e}", file=os.sys.stderr)
         return None
 
 
@@ -24,19 +27,14 @@ def load_products_csv(file_path):
             csv_reader = csv.DictReader(csv_file)
             data = list(csv_reader)
             for row in data:
-                if 'id' in row:
-                    try:
-                        row['id'] = int(row['id'])
-                    except ValueError:
-                        pass
-                if 'price' in row:
-                    try:
-                        row['price'] = float(row['price'])
-                    except ValueError:
-                        pass
+                try:
+                    row['id'] = int(row['id'])
+                    row['price'] = float(row['price'])
+                except (ValueError, KeyError):
+                    continue
         return data
     except (FileNotFoundError, Exception) as e:
-        print(f"Error loading CSV data: {e}")
+        print(f"Error loading CSV data: {e}", file=os.sys.stderr)
         return None
 
 
@@ -57,7 +55,6 @@ def contact():
 
 @app.route('/items')
 def items():
-    base_dir = os.path.dirname(os.path.abspath(__file__))
     file_path = os.path.join(base_dir, 'items.json')
     try:
         with open(file_path, 'r') as file:
@@ -70,16 +67,12 @@ def items():
 
 @app.route('/products')
 def products():
-    """
-    Renders products from 'json' or 'csv' source,
-    supporting optional ID filtering.
-    URL Examples: /products?source=json&id=2 | /products?source=csv
-    """
+    """Renders products from 'json' or 'csv' source,
+    with optional ID filtering."""
     source = request.args.get('source')
-    product_id = request.args.get('id')
+    product_id_str = request.args.get('id')
 
     products_data = None
-    base_dir = os.path.dirname(os.path.abspath(__file__))
 
     if source == 'json':
         file_path = os.path.join(base_dir, 'products.json')
@@ -93,21 +86,31 @@ def products():
         return render_template('product_display.html', error='Wrong source')
 
     if products_data is None:
-        return render_template('product_display.html',
-                               error=f'Could not load data from {source} file')
+        return render_template(
+            'product_display.html',
+            error=f'Could not load data from {source} file'
+        )
 
-    if product_id:
+    if product_id_str:
         try:
             products_data = [
                 p for p in products_data
-                if str(p.get('id') or p.get('id', '')) == product_id
+                if str(p.get('id')) == product_id_str
             ]
         except Exception:
             products_data = []
 
         if not products_data:
-            return render_template('product_display.html',
-                                   error='Product not found')
+            return render_template(
+                'product_display.html',
+                error='Product not found'
+            )
+
+        return render_template(
+            'product_display.html',
+            product=products_data[0],
+            source=source
+        )
 
     return render_template(
         'product_display.html',
