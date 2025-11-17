@@ -7,4 +7,7 @@ new instance attributes, except if the new instance attribute is called
 
 
 class LockedClass:
+    """
+    A class that restricts instance attribute creation to 'first_name' only.
+    """
     __slots__ = ['first_name']
